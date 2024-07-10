@@ -11,7 +11,7 @@ import { SignedIn, SignOutButton } from "@clerk/clerk-react";
 export default function LeftSidebar() {
   const pathname = usePathname();
   return (
-    <section className="background-light900_dark200 light-border custom-scrollbar fixed top-0 left-0 h-screen flex flex-col justify-between overflow-y-auto border-r p-6 pt-36 shadow-light-300 dark:shadow-none max-sm:hidden lg:w-[266px]">
+    <section className="background-light900_dark200 light-border custom-scrollbar sticky top-0 left-0 h-screen flex flex-col justify-between overflow-y-auto border-r p-6 pt-36 shadow-light-300 dark:shadow-none max-sm:hidden lg:w-[266px]">
       <div className="flex flex-col flex-1">
         {sidebarLinks.map((item) => {
           const isActive =

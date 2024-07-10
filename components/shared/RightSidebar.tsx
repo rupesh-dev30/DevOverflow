@@ -20,7 +20,7 @@ export default function RightSidebar() {
   ];
 
   return (
-    <section className="background-light900_dark200 light-border custom-scrollbar fixed top-0 right-0 h-screen flex flex-col overflow-y-auto border-l p-6 pt-36 shadow-light-300 dark:shadow-none max-xl:hidden w-[350px]">
+    <section className="background-light900_dark200 light-border custom-scrollbar sticky top-0 right-0 h-screen flex flex-col overflow-y-auto border-l p-6 pt-36 shadow-light-300 dark:shadow-none max-xl:hidden w-[350px]">
       <div>
         <h3 className="h3-bold text-dark200_light900">Top Questions</h3>
         <div className="mt-7 flex w-full flex-col gap-[30px]">
