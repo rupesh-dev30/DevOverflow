@@ -4,19 +4,19 @@ import RenderTag from "./RenderTag";
 
 export default function RightSidebar() {
   const hotQuestions = [
-    { _id: 1, title: "How do I use expres as a custom server in nextjs?" },
-    { _id: 2, title: "How do I use expres as a custom server in nextjs?" },
-    { _id: 3, title: "How do I use expres as a custom server in nextjs?" },
-    { _id: 4, title: "How do I use expres as a custom server in nextjs?" },
-    { _id: 5, title: "How do I use expres as a custom server in nextjs?" },
+    { _id: "1", title: "How do I use expres as a custom server in nextjs?" },
+    { _id: "2", title: "How do I use expres as a custom server in nextjs?" },
+    { _id: "3", title: "How do I use expres as a custom server in nextjs?" },
+    { _id: "4", title: "How do I use expres as a custom server in nextjs?" },
+    { _id: "5", title: "How do I use expres as a custom server in nextjs?" },
   ];
 
   const popularTags = [
-    { _id: 1, name: "javascript", totalQuestions: "2" },
-    { _id: 1, name: "typescript", totalQuestions: "8" },
-    { _id: 1, name: "nextjs", totalQuestions: "4" },
-    { _id: 1, name: "c++", totalQuestions: "2" },
-    { _id: 1, name: "react", totalQuestions: "3" },
+    { _id: "1", name: "javascript", totalQuestions: "2" },
+    { _id: "2", name: "typescript", totalQuestions: "8" },
+    { _id: "3", name: "nextjs", totalQuestions: "4" },
+    { _id: "4", name: "c++", totalQuestions: "2" },
+    { _id: "5", name: "react", totalQuestions: "3" },
   ];
 
   return (
@@ -48,7 +48,13 @@ export default function RightSidebar() {
         <h3 className="h3-bold text-dark200 light900">Popular Tags</h3>
         <div className="mt-7 flex flex-col gap-4">
           {popularTags.map((tag) => (
-            <RenderTag key={tag._id} _id={tag._id} name={tag.name} totalQuestions={tag.totalQuestions} showCount/>
+            <RenderTag
+              key={tag._id}
+              _id={tag._id}
+              name={tag.name}
+              totalQuestions={tag.totalQuestions}
+              showCount
+            />
           ))}
         </div>
       </div>
