@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { QuestionSchema } from "@/lib/validations";
 import { Badge } from "../ui/badge";
 import Image from "next/image";
+import { createQuestion } from "@/lib/actions/question.action";
 
 const type: any = "create";
 
@@ -37,7 +38,7 @@ export default function Question() {
   });
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof QuestionSchema>) {
+  async function onSubmit(values: z.infer<typeof QuestionSchema>) {
     setIsSubmitting(true);
     
     try{
@@ -45,6 +46,7 @@ export default function Question() {
       //contain all form data
 
       //navigate to home page
+      await createQuestion({});
     } catch (error) {
 
     } finally {
