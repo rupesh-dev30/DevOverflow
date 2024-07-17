@@ -20,19 +20,29 @@ import { QuestionSchema } from "@/lib/validations";
 import { Badge } from "../ui/badge";
 import Image from "next/image";
 import { createQuestion } from "@/lib/actions/question.action";
+import { useRouter, usePathname } from "next/navigation";
 
 const type: any = "create";
 
-export default function Question() {
+interface Props {
+  mongoUserId: string;
+}
+
+// Utility function to strip HTML tags
+const stripHtmlTags = (str: string) => str.replace(/<[^>]*>?/gm, '');
+
+export default function Question({mongoUserId}: Props) {
   const editorRef = useRef(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const Router = useRouter();
+  const pathname = usePathname();
 
   const form = useForm<z.infer<typeof QuestionSchema>>({
     resolver: zodResolver(QuestionSchema),
     defaultValues: {
       title: "",
-      explanation: "",
+      explaination: "",
       tags: [],
     },
   });
@@ -41,14 +51,19 @@ export default function Question() {
   async function onSubmit(values: z.infer<typeof QuestionSchema>) {
     setIsSubmitting(true);
     
-    try{
-      //make an async call to your api -> create a question
-      //contain all form data
+    try {
+      const strippedExplaination = stripHtmlTags(values.explaination);
+      await createQuestion({
+        title: values.title,
+        content: strippedExplaination,
+        tags: values.tags,
+        author: JSON.parse(mongoUserId),
+      });
 
-      //navigate to home page
-      await createQuestion({});
+      // Navigate to home page
+      Router.push("/");
     } catch (error) {
-
+      console.error("Error submitting question:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -110,8 +125,7 @@ export default function Question() {
                 />
               </FormControl>
               <FormDescription className="body-regular mt-2.5 text-light-500">
-                Be specific and imagine you&apos;re asking a question to another
-                person.
+                Be specific and imagine you&apos;re asking a question to another person.
               </FormDescription>
               <FormMessage className="text-red-500" />
             </FormItem>
@@ -119,11 +133,11 @@ export default function Question() {
         />
         <FormField
           control={form.control}
-          name="explanation"
+          name="explaination"
           render={({ field }) => (
             <FormItem className="flex w-full flex-col gap-3">
               <FormLabel className="paragraph-semibold text-dark400_light800">
-                Detail explanation of your problem{" "}
+                Detail explaination of your problem{" "}
                 <span className="text-primary-500">*</span>
               </FormLabel>
               <FormControl className="mt-3.5">
@@ -134,6 +148,7 @@ export default function Question() {
                     editorRef.current = editor;
                   }}
                   initialValue=""
+                  onEditorChange={(content) => field.onChange(content)}
                   init={{
                     height: 350,
                     menubar: false,
