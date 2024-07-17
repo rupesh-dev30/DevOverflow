@@ -29,9 +29,9 @@ interface Props {
 }
 
 // Utility function to strip HTML tags
-const stripHtmlTags = (str: string) => str.replace(/<[^>]*>?/gm, '');
+const stripHtmlTags = (str: string) => str.replace(/<[^>]*>?/gm, "");
 
-export default function Question({mongoUserId}: Props) {
+export default function Question({ mongoUserId }: Props) {
   const editorRef = useRef(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -50,7 +50,7 @@ export default function Question({mongoUserId}: Props) {
   // 2. Define a submit handler.
   async function onSubmit(values: z.infer<typeof QuestionSchema>) {
     setIsSubmitting(true);
-    
+
     try {
       const strippedExplaination = stripHtmlTags(values.explaination);
       await createQuestion({
@@ -58,6 +58,7 @@ export default function Question({mongoUserId}: Props) {
         content: strippedExplaination,
         tags: values.tags,
         author: JSON.parse(mongoUserId),
+        path: pathname
       });
 
       // Navigate to home page
@@ -125,7 +126,8 @@ export default function Question({mongoUserId}: Props) {
                 />
               </FormControl>
               <FormDescription className="body-regular mt-2.5 text-light-500">
-                Be specific and imagine you&apos;re asking a question to another person.
+                Be specific and imagine you&apos;re asking a question to another
+                person.
               </FormDescription>
               <FormMessage className="text-red-500" />
             </FormItem>
