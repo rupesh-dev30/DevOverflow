@@ -12,7 +12,7 @@ export default async function page() {
 
   const mongoUser = await getUserById({ userId });
 
-  console.log(mongoUser);
+  // console.log(mongoUser);
 
   return (
     <div>
