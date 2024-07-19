@@ -22,7 +22,8 @@ export async function POST(req: Request) {
 
   // If there are no headers, error out
   if (!svix_id || !svix_timestamp || !svix_signature) {
-    return new Response("Error occured -- no svix headers", {
+    console.error("Error: Missing svix headers");
+    return new Response("Error occurred -- no svix headers", {
       status: 400,
     });
   }
@@ -45,66 +46,72 @@ export async function POST(req: Request) {
     }) as WebhookEvent;
   } catch (err) {
     console.error("Error verifying webhook:", err);
-    return new Response("Error occured", {
+    return new Response("Error occurred", {
       status: 400,
     });
   }
 
-  // Do something with the payload
-  // For this guide, you simply log the payload to the console
+  // Log the event type
   const eventType = evt.type;
+  console.log(`Received event type: ${eventType}`);
 
-  console.log(eventType);
-  
-  // console.log(`Webhook with and ID of ${id} and type of ${eventType}`)
-  // console.log('Webhook body:', body)
-  // console.log(eventType);
-  
-
+  // Handle different event types
   if (eventType === "user.created") {
-    const { id, email_addresses, image_url, username, first_name, last_name } =
-      evt.data;
+    const { id, email_addresses, image_url, username, first_name, last_name } = evt.data;
 
-    //Create a new user in a database
-    const mongoUser = await createUser({
-      clerkId: id,
-      name: `${first_name}${last_name ? ` ${last_name}` : ""}`,
-      username: username!,
-      email: email_addresses[0].email_address,
-      picture: image_url,
-    });
-
-    return NextResponse.json({ message: "OK", user: mongoUser });
-  }
-
-  if (eventType === "user.updated") {
-    const { id, email_addresses, image_url, username, first_name, last_name } =
-      evt.data;
-
-    //Create a new user in a database
-    const mongoUser = await updateUser({
-      clerkId: id,
-      updateData: {
+    try {
+      const mongoUser = await createUser({
+        clerkId: id,
         name: `${first_name}${last_name ? ` ${last_name}` : ""}`,
         username: username!,
         email: email_addresses[0].email_address,
         picture: image_url,
-      },
-      path: `/profile/${id}`,
-    });
+      });
+      console.log("User created:", mongoUser);
+      return NextResponse.json({ message: "OK", user: mongoUser });
+    } catch (error) {
+      console.error("Error creating user:", error);
+      return new Response("Error occurred while creating user", { status: 500 });
+    }
+  }
 
-    return NextResponse.json({ message: "OK", user: mongoUser });
+  if (eventType === "user.updated") {
+    const { id, email_addresses, image_url, username, first_name, last_name } = evt.data;
+
+    try {
+      const mongoUser = await updateUser({
+        clerkId: id,
+        updateData: {
+          name: `${first_name}${last_name ? ` ${last_name}` : ""}`,
+          username: username!,
+          email: email_addresses[0].email_address,
+          picture: image_url,
+        },
+        path: `/profile/${id}`,
+      });
+      console.log("User updated:", mongoUser);
+      return NextResponse.json({ message: "OK", user: mongoUser });
+    } catch (error) {
+      console.error("Error updating user:", error);
+      return new Response("Error occurred while updating user", { status: 500 });
+    }
   }
 
   if (eventType === "user.deleted") {
     const { id } = evt.data;
 
-    const deletedUser = await deleteUser({
-      clerkId: id!,
-    });
-
-    return NextResponse.json({ message: "OK", user: deletedUser });
+    try {
+      const deletedUser = await deleteUser({
+        clerkId: id!,
+      });
+      console.log("User deleted:", deletedUser);
+      return NextResponse.json({ message: "OK", user: deletedUser });
+    } catch (error) {
+      console.error("Error deleting user:", error);
+      return new Response("Error occurred while deleting user", { status: 500 });
+    }
   }
 
+  console.warn("Unhandled event type:", eventType);
   return new Response("", { status: 200 });
 }
