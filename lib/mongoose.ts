@@ -15,8 +15,6 @@ export async function connectToDatabase() {
       dbName: "devflow",
     })
     isConnected = true;
-
-    console.log('MongoDB is connected');
     
   } catch(error) {
     console.log('MongoDB connection failed', error);
